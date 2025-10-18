@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash Screen Theme for Aristotle App - Instant transition -->
+    <style name="Theme.Aristotle.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0A0E27</item>
+        <!-- No icon, instant transition -->
+        <item name="windowSplashScreenAnimationDuration">1</item>
+        <item name="android:windowSplashScreenBrandingImage">@null</item>
+        <item name="postSplashScreenTheme">@style/Theme.Aristotle</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+</resources>

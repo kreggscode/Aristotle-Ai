@@ -1,0 +1,28 @@
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+
+# Exclude all markdown files except README.md
+*.md
+!README.md
+
+# Exclude documentation markdown files
+FIXES_SUMMARY.md
+TRANSFORMATION_SUMMARY.md
+NAVIGATION_AND_UI_FIXES.md
+FINAL_FIXES_SUMMARY.md
