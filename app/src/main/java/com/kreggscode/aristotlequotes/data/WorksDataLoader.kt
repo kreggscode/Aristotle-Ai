@@ -43,6 +43,7 @@ data class Essay(
     val openingQuote: String,
     val mainThemes: List<String>,
     val keyPoints: List<KeyPoint>,
+    val controversialAspects: List<String>? = null,
     val relevanceToday: List<String> = emptyList(),
     val closingThought: String? = null
 )
@@ -70,7 +71,8 @@ data class Paper(
     val id: String,
     val title: String,
     val year: String,
-    val journal: String,
+    val journal: String? = null,
+    val location: String? = null,
     val date: String? = null,
     val icon: String,
     val summary: String,
@@ -79,7 +81,18 @@ data class Paper(
     val keyEquations: List<String>? = null,
     val predictions: List<Prediction>? = null,
     val papers: List<SubPaper>? = null,
+    val works: List<WorkItem>? = null,
     val legacy: String? = null
+)
+
+data class WorkItem(
+    val number: Int,
+    val title: String,
+    val topic: String,
+    val abstract: String,
+    val keyConcept: String? = null,
+    val keyQuote: String? = null,
+    val impact: String
 )
 
 data class Prediction(
@@ -92,10 +105,12 @@ data class Prediction(
 data class SubPaper(
     val number: Int,
     val title: String,
-    val date: String,
+    val date: String? = null,
     val topic: String,
-    val pages: String,
+    val pages: String? = null,
     val abstract: String,
+    val keyConcept: String? = null,
+    val keyQuote: String? = null,
     val keyEquation: String? = null,
     val keyEquations: List<String>? = null,
     val impact: String,
@@ -112,7 +127,7 @@ class WorksDataLoader(private val context: Context) {
                 .use { it.readText() }
             
             val type = object : TypeToken<List<MajorWork>>() {}.type
-            gson.fromJson(json, type)
+            gson.fromJson<List<MajorWork>>(json, type) ?: emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -126,7 +141,7 @@ class WorksDataLoader(private val context: Context) {
                 .use { it.readText() }
             
             val type = object : TypeToken<List<Essay>>() {}.type
-            gson.fromJson(json, type)
+            gson.fromJson<List<Essay>>(json, type) ?: emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -140,7 +155,7 @@ class WorksDataLoader(private val context: Context) {
                 .use { it.readText() }
             
             val type = object : TypeToken<List<Letter>>() {}.type
-            gson.fromJson(json, type)
+            gson.fromJson<List<Letter>>(json, type) ?: emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -154,7 +169,7 @@ class WorksDataLoader(private val context: Context) {
                 .use { it.readText() }
             
             val type = object : TypeToken<List<Paper>>() {}.type
-            gson.fromJson(json, type)
+            gson.fromJson<List<Paper>>(json, type) ?: emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()

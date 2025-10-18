@@ -25,8 +25,10 @@ sealed class Screen(val route: String) {
     object WorkQuotes : Screen("work_quotes/{work}") {
         fun createRoute(work: String) = "work_quotes/$work"
     }
-    object WorkDetail : Screen("work_detail/{workId}") {
-        fun createRoute(workId: String) = "work_detail/$workId"
+    object WorkDetail : Screen("work_detail/{workId}?category={category}") {
+        fun createRoute(workId: String, category: String? = null) = 
+            if (category != null) "work_detail/$workId?category=$category" 
+            else "work_detail/$workId"
     }
     object EssayDetail : Screen("essay_detail/{essayId}") {
         fun createRoute(essayId: String) = "essay_detail/$essayId"
@@ -123,7 +125,7 @@ fun NavGraph(
                 onWorkClick = { workItem ->
                     when (workItem.category) {
                         WorkCategory.MAJOR_WORKS -> {
-                            navController.navigate(Screen.WorkDetail.createRoute(workItem.id))
+                            navController.navigate(Screen.WorkDetail.createRoute(workItem.id, "MAJOR_WORKS"))
                         }
                         WorkCategory.ESSAYS -> {
                             navController.navigate(Screen.EssayDetail.createRoute(workItem.id))
@@ -265,13 +267,21 @@ fun NavGraph(
         // Aristotle Works Detail Screens
         composable(
             route = Screen.WorkDetail.route,
-            arguments = listOf(navArgument("workId") { type = NavType.StringType })
+            arguments = listOf(
+                navArgument("workId") { type = NavType.StringType },
+                navArgument("category") { 
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
         ) { backStackEntry ->
             val workId = backStackEntry.arguments?.getString("workId") ?: ""
+            val category = backStackEntry.arguments?.getString("category")
             WorkDetailScreen(
                 workId = workId,
                 onBackClick = {
-                    // Simply pop back to previous screen
+                    // Simply pop back to previous screen (which should be the Works screen with the category preserved)
                     navController.popBackStack()
                 },
                 onChatClick = { prompt ->

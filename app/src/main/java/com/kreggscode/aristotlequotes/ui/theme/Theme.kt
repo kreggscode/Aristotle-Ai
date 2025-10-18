@@ -53,14 +53,9 @@ fun AristotleTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Enable edge-to-edge with transparent system bars
-            window.statusBarColor = Color.Transparent.toArgb()
-            window.navigationBarColor = Color.Transparent.toArgb()
-            
-            // Enable drawing behind system bars for true edge-to-edge
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            
-            WindowCompat.getInsetsController(window, view).apply {
+            // Set icon appearance for status and navigation bars
+            // enableEdgeToEdge() in MainActivity already handles transparency and edge-to-edge
+            WindowCompat.getInsetsController(window, view)?.apply {
                 // ALWAYS use white icons since our app has dark backgrounds in both modes
                 isAppearanceLightStatusBars = false  // false = white icons
                 isAppearanceLightNavigationBars = false  // false = white icons

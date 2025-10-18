@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
@@ -25,8 +27,8 @@ fun EnhancedAboutScreen(
     onBackClick: () -> Unit,
     onWorkClick: ((String) -> Unit)? = null
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Biography", "Works", "Legacy", "Timeline")
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val tabs = listOf("Biography", "Works", "Legacy", "Timeline", "Policies")
     
     // Handle back button - if on another tab, go to Biography first, then exit
     BackHandler(enabled = selectedTab != 0) {
@@ -63,7 +65,7 @@ fun EnhancedAboutScreen(
                     navigationIcon = {
                         IconButton(onClick = onBackClick) {
                             Icon(
-                                Icons.Default.ArrowBack,
+                                Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back",
                                 tint = Color.White
                             )
@@ -82,7 +84,7 @@ fun EnhancedAboutScreen(
                     .padding(padding)
             ) {
                 // Tabs
-                ScrollableTabRow(
+                PrimaryScrollableTabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = Color.Transparent,
                     contentColor = Color.White,
@@ -108,6 +110,7 @@ fun EnhancedAboutScreen(
                     1 -> WorksTab(onWorkClick = onWorkClick)
                     2 -> LegacyTab()
                     3 -> TimelineTab()
+                    4 -> PoliciesTab()
                 }
             }
         }
@@ -523,6 +526,364 @@ fun TimelineCard(event: TimelineEvent) {
                     color = Color.White
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun PoliciesTab() {
+    var selectedPolicy by rememberSaveable { mutableStateOf<String?>(null) }
+    
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (selectedPolicy != null) {
+            // Back button
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedPolicy = null }
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = PremiumColors.ElectricPurple
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Back to Policies",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = PremiumColors.ElectricPurple,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            
+            // Show selected policy content
+            if (selectedPolicy == "privacy") {
+                privacyPolicyContent()
+            } else if (selectedPolicy == "terms") {
+                termsAndConditionsContent()
+            }
+        } else {
+            // Show policy selection
+            item {
+                GlassmorphicCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    glowColor = PremiumColors.ElectricPurple,
+                    animateGlow = true
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("📋", fontSize = 64.sp)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            "Policies & Legal",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Read our privacy policy and terms of service",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.White.copy(alpha = 0.7f),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+            
+            item {
+                PolicyCard(
+                    title = "Privacy Policy",
+                    icon = "🔒",
+                    description = "Learn how we protect your data and respect your privacy",
+                    onClick = { selectedPolicy = "privacy" }
+                )
+            }
+            
+            item {
+                PolicyCard(
+                    title = "Terms & Conditions",
+                    icon = "📜",
+                    description = "Read the terms of service for using Aristotle AI",
+                    onClick = { selectedPolicy = "terms" }
+                )
+            }
+            
+            item {
+                GlassmorphicCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    glowColor = PremiumColors.CyberBlue
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("ℹ️", fontSize = 32.sp)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            "App Version",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "1.0",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PolicyCard(
+    title: String,
+    icon: String,
+    description: String,
+    onClick: () -> Unit
+) {
+    GlassmorphicCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        glowColor = PremiumColors.CyberBlue
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(icon, fontSize = 32.sp)
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(alpha = 0.8f)
+                    )
+                }
+            }
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = "View",
+                tint = PremiumColors.ElectricPurple,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+}
+
+fun LazyListScope.privacyPolicyContent() {
+    item {
+        GlassmorphicCard(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    "🔒 Privacy Policy",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Last Updated: October 18, 2025",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = PremiumColors.CyberBlue
+                )
+            }
+        }
+    }
+    
+    item {
+        PolicySection(
+            title = "1. Information We Collect",
+            content = "Aristotle AI is designed with privacy in mind. We collect minimal information:\n\n• Favorites Data: Your saved favorite quotes are stored locally on your device\n• App Preferences: Settings like dark mode and notification preferences\n• Usage Analytics: Anonymous data about app crashes and performance to improve the app"
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "2. Information We Don't Collect",
+            content = "We respect your privacy and do NOT collect:\n\n• Personal identification information (name, email, phone number)\n• Location data\n• Contacts or photos\n• Any data that can personally identify you"
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "3. Data Storage",
+            content = "All your data (favorites, preferences) is stored locally on your device. We do not store your personal data on external servers. Your information stays with you."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "4. Third-Party Services",
+            content = "Aristotle AI may use Google Play Services for app distribution and updates, and Android WorkManager for scheduling daily notifications. These services have their own privacy policies."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "5. Children's Privacy",
+            content = "Aristotle AI is suitable for all ages. We do not knowingly collect personal information from children under 13. The app does not require any personal information to function."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "6. Your Rights",
+            content = "You have the right to:\n\n• Access your data (all stored locally on your device)\n• Delete your data (uninstall the app or clear app data)\n• Disable notifications at any time\n• Clear cache from the app settings"
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "7. Contact",
+            content = "If you have any questions about this Privacy Policy, please contact us at: kreg9da@gmail.com"
+        )
+    }
+}
+
+fun LazyListScope.termsAndConditionsContent() {
+    item {
+        GlassmorphicCard(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    "📜 Terms & Conditions",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Last Updated: October 18, 2025",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = PremiumColors.CyberBlue
+                )
+            }
+        }
+    }
+    
+    item {
+        PolicySection(
+            title = "1. Acceptance of Terms",
+            content = "By downloading, installing, or using Aristotle AI, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use the app."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "2. License to Use",
+            content = "We grant you a limited, non-exclusive, non-transferable, revocable license to use Aristotle AI for personal, non-commercial purposes. You may not:\n\n• Modify, reverse engineer, or decompile the app\n• Remove any copyright or proprietary notices\n• Use the app for any illegal purposes\n• Attempt to gain unauthorized access to the app's systems"
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "3. Content Ownership",
+            content = "All quotes, texts, and content related to Aristotle's works are in the public domain. The app's design, code, and original content are © 2025 Kreggscode. All rights reserved."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "4. User Conduct",
+            content = "You agree to use Aristotle AI responsibly and in accordance with all applicable laws. You will not use the app to:\n\n• Harass, abuse, or harm others\n• Distribute malware or harmful code\n• Violate any intellectual property rights\n• Engage in any fraudulent activity"
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "5. Disclaimer of Warranties",
+            content = "Aristotle AI is provided \"as is\" without warranties of any kind, either express or implied. We do not guarantee that the app will be error-free, secure, or uninterrupted."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "6. Limitation of Liability",
+            content = "To the maximum extent permitted by law, Kreggscode shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of Aristotle AI."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "7. Changes to Terms",
+            content = "We reserve the right to modify these Terms and Conditions at any time. Continued use of the app after changes constitutes acceptance of the modified terms."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "8. Termination",
+            content = "We may terminate or suspend your access to Aristotle AI at any time, without prior notice, for conduct that we believe violates these Terms or is harmful to other users."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "9. Governing Law",
+            content = "These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict of law provisions."
+        )
+    }
+    
+    item {
+        PolicySection(
+            title = "10. Contact Information",
+            content = "For questions about these Terms and Conditions, please contact us at: kreg9da@gmail.com"
+        )
+    }
+}
+
+@Composable
+fun PolicySection(title: String, content: String) {
+    GlassmorphicCard(
+        modifier = Modifier.fillMaxWidth(),
+        glowColor = PremiumColors.CyberBlue.copy(alpha = 0.3f)
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = PremiumColors.QuantumGold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                content,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.9f),
+                lineHeight = 22.sp
+            )
         }
     }
 }

@@ -9,7 +9,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.filled.MenuBook
@@ -49,8 +51,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Enable edge-to-edge display (modern API for Android 15+)
-        enableEdgeToEdge()
+        // Enable edge-to-edge display with proper insets handling for Android 15+
+        enableEdgeToEdge(
+            statusBarStyle = androidx.activity.SystemBarStyle.dark(
+                android.graphics.Color.TRANSPARENT
+            ),
+            navigationBarStyle = androidx.activity.SystemBarStyle.dark(
+                android.graphics.Color.TRANSPARENT
+            )
+        )
+        
+        // Configure window for edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         
         // Set status bar and navigation bar icons to WHITE (light icons on dark background)
         WindowCompat.getInsetsController(window, window.decorView)?.apply {

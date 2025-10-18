@@ -152,7 +152,11 @@ private fun PaperHeroCard(paper: Paper) {
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "${paper.year} • ${paper.journal}",
+                text = buildString {
+                    append(paper.year)
+                    paper.journal?.let { append(" • $it") }
+                    paper.location?.let { append(" • $it") }
+                },
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(0.6f)
             )

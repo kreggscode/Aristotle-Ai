@@ -864,32 +864,6 @@ fun DataPrivacySection(context: android.content.Context) {
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Privacy Policy
-            SettingRow(
-                icon = Icons.Default.PrivacyTip,
-                title = "Privacy Policy",
-                subtitle = "How we protect your data",
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://kreggscode.github.io/Aristotle-Ai/privacy.html"))
-                    context.startActivity(intent)
-                }
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // Terms of Service
-            SettingRow(
-                icon = Icons.Default.Description,
-                title = "Terms of Service",
-                subtitle = "Our terms and conditions",
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://kreggscode.github.io/Aristotle-Ai/terms.html"))
-                    context.startActivity(intent)
-                }
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
             // Clear Cache
             SettingRow(
                 icon = Icons.Default.CleaningServices,
@@ -927,19 +901,6 @@ fun HelpSupportSection(context: android.content.Context) {
             )
             
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // FAQ
-            SettingRow(
-                icon = Icons.Default.QuestionAnswer,
-                title = "FAQ",
-                subtitle = "Frequently asked questions",
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://kreggscode.github.io/Aristotle-Ai/"))
-                    context.startActivity(intent)
-                }
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
             
             // Report a Bug
             SettingRow(

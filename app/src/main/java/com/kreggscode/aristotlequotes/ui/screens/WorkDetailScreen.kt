@@ -254,7 +254,9 @@ private fun HeroSection(work: DetailedWork) {
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Animated icon
@@ -305,7 +307,8 @@ private fun HeroSection(work: DetailedWork) {
                 text = work.title,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
             
             if (work.subtitle.isNotEmpty()) {
@@ -314,7 +317,8 @@ private fun HeroSection(work: DetailedWork) {
                     text = work.subtitle,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             

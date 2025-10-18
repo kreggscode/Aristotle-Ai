@@ -10,10 +10,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,9 +55,11 @@ data class WorkItem(
 fun AristotleWorksScreen(
     onBackClick: () -> Unit,
     onWorkClick: (WorkItem) -> Unit,
-    onChatClick: (String) -> Unit
+    onChatClick: (String) -> Unit,
+    initialCategory: WorkCategory? = null
 ) {
-    var selectedCategory by remember { mutableStateOf<WorkCategory?>(null) }
+    // Use rememberSaveable to preserve category selection across navigation
+    var selectedCategory by rememberSaveable { mutableStateOf<WorkCategory?>(initialCategory) }
     val context = LocalContext.current
     val dataLoader = remember { WorksDataLoader(context) }
     val coroutineScope = rememberCoroutineScope()
@@ -180,7 +186,7 @@ fun AristotleWorksScreen(
                         titleContentColor = Color.White,
                         navigationIconContentColor = Color.White
                     ),
-                    modifier = Modifier.padding(top = 24.dp)
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)
                 )
             },
             containerColor = Color.Transparent

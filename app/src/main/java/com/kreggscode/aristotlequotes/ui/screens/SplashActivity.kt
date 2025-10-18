@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -12,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import com.kreggscode.aristotlequotes.MainActivity
 import com.kreggscode.aristotlequotes.ui.theme.PremiumColors
@@ -23,10 +23,14 @@ class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Enable edge-to-edge display
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.Transparent.toArgb()
-        window.navigationBarColor = Color.Transparent.toArgb()
+        // Enable edge-to-edge display (modern API for Android 15+)
+        enableEdgeToEdge()
+        
+        // Set status bar and navigation bar icons to white for dark background
+        WindowCompat.getInsetsController(window, window.decorView)?.apply {
+            isAppearanceLightStatusBars = false  // false = white icons
+            isAppearanceLightNavigationBars = false  // false = white icons
+        }
         
         setContent {
             var shouldNavigate by remember { mutableStateOf(false) }

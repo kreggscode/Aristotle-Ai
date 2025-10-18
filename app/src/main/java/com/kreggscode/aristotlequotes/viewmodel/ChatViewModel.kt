@@ -101,8 +101,18 @@ class ChatViewModel : ViewModel() {
                 )
                 
             } catch (e: Exception) {
-                // Handle error
-                _error.value = "Connection error: ${e.message}"
+                // Handle error with detailed logging
+                e.printStackTrace()
+                
+                val errorMessage = when (e) {
+                    is java.net.UnknownHostException -> "No internet connection. Please check your network."
+                    is java.net.SocketTimeoutException -> "Request timed out. Please try again."
+                    is retrofit2.HttpException -> "Server error (${e.code()}). Please try again later."
+                    is com.google.gson.JsonSyntaxException -> "Response parsing error. Please try again."
+                    else -> "Connection error: ${e.localizedMessage ?: "Unknown error"}"
+                }
+                
+                _error.value = errorMessage
                 _messages.value = _messages.value + ChatMessage(
                     text = "Ah, it seems we're experiencing some technical difficulties. Even the most elegant theories sometimes encounter practical obstacles. Please try again.",
                     isUser = false

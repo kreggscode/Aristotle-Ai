@@ -860,9 +860,6 @@ fun QuickActionCard(
                 modifier = Modifier
                     .size(32.dp)
                     .scale(iconScale)
-                    .graphicsLayer {
-                        shadowElevation = 4.dp.toPx()
-                    }
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -871,10 +868,7 @@ fun QuickActionCard(
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                lineHeight = 14.sp,
-                modifier = Modifier.graphicsLayer {
-                    shadowElevation = 2.dp.toPx()
-                }
+                lineHeight = 14.sp
             )
         }
     }

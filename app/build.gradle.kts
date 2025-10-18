@@ -14,7 +14,7 @@ android {
         applicationId = "com.kreggscode.aristotlequotes"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
+        versionCode = 5
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -34,6 +34,15 @@ android {
             ndk {
                 debugSymbolLevel = "FULL"
             }
+            // Ensure proper debugging for release builds
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     
@@ -65,6 +74,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
     implementation("androidx.activity:activity-compose:1.11.0")
+    implementation("androidx.activity:activity-ktx:1.11.0")
     
     // Compose - Use stable BOM version
     implementation(platform("androidx.compose:compose-bom:2025.10.00"))

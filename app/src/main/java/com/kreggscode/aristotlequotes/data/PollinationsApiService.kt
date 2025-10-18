@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
+import com.kreggscode.aristotlequotes.BuildConfig
 
 // Request/Response models for Pollinations AI
 data class PollinationsMessage(
@@ -49,16 +50,20 @@ interface PollinationsApiService {
         private const val BASE_URL = "https://text.pollinations.ai/"
         
         fun create(): PollinationsApiService {
-            val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            
-            val client = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
+            val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
-                .build()
+            
+            // Only add logging in debug builds
+            if (BuildConfig.DEBUG) {
+                val loggingInterceptor = HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+                clientBuilder.addInterceptor(loggingInterceptor)
+            }
+            
+            val client = clientBuilder.build()
             
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)

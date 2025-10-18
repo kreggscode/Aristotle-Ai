@@ -7,8 +7,8 @@
         <item name="windowSplashScreenAnimationDuration">1</item>
         <item name="android:windowSplashScreenBrandingImage">@null</item>
         <item name="postSplashScreenTheme">@style/Theme.Aristotle</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- Removed deprecated statusBarColor and navigationBarColor -->
+        <!-- These are now handled by enableEdgeToEdge() in SplashActivity -->
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowActionBar">false</item>
