@@ -14,8 +14,8 @@ android {
         applicationId = "com.kreggscode.aristotlequotes"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.0"
+        versionCode = 7
+        versionName = "1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -27,15 +27,20 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            // Use standard ProGuard instead of optimize to reduce aggressive optimizations
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile("proguard-android.txt"),  // Changed from proguard-android-optimize.txt
                 "proguard-rules.pro"
             )
             ndk {
                 debugSymbolLevel = "FULL"
             }
-            // Ensure proper debugging for release builds
+            // For testing, use debug signing. For production, create a release keystore.
             signingConfig = signingConfigs.getByName("debug")
+            
+            // Automatically upload symbols to Play Console
+            isDebuggable = false
+            isMinifyEnabled = true
         }
         debug {
             isMinifyEnabled = false
@@ -59,6 +64,7 @@ android {
     
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     
     packaging {

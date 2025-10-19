@@ -27,36 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import com.kreggscode.aristotlequotes.data.WorksDataLoader
+import com.kreggscode.aristotlequotes.data.Section
+import com.kreggscode.aristotlequotes.data.EquationDetail
 import com.kreggscode.aristotlequotes.ui.components.GlassmorphicCard
 import com.kreggscode.aristotlequotes.ui.theme.AIInsightsButton
 import com.kreggscode.aristotlequotes.ui.theme.PremiumColors
 import kotlinx.coroutines.launch
-
-// Data models for detailed content
-data class WorkSection(
-    val title: String,
-    val content: String
-)
-
-data class Equation(
-    val formula: String,
-    val name: String,
-    val explanation: String
-)
-
-data class DetailedWork(
-    val id: String,
-    val title: String,
-    val subtitle: String,
-    val year: String,
-    val icon: String,
-    val summary: String,
-    val keyEquation: String? = null,
-    val keyEquationExplanation: String? = null,
-    val sections: List<WorkSection> = emptyList(),
-    val equations: List<Equation> = emptyList(),
-    val funFacts: List<String> = emptyList()
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,22 +78,6 @@ fun WorkDetailScreen(
     }
     
     val workData = work!!
-    
-    val detailedWork = remember(workData) {
-        DetailedWork(
-            id = workData.id,
-            title = workData.title,
-            subtitle = workData.subtitle,
-            year = workData.year,
-            icon = workData.icon,
-            summary = workData.summary,
-            keyEquation = workData.keyEquation,
-            keyEquationExplanation = workData.keyEquationExplanation,
-            sections = workData.sections?.map { WorkSection(it.title, it.content) } ?: emptyList(),
-            equations = workData.equations?.map { Equation(it.formula, it.name, it.explanation) } ?: emptyList(),
-            funFacts = workData.funFacts ?: emptyList()
-        )
-    }
     
     var showEquations by remember { mutableStateOf(false) }
     var showFunFacts by remember { mutableStateOf(false) }
@@ -172,69 +132,69 @@ fun WorkDetailScreen(
         ) {
             // Hero Section
             item {
-                HeroSection(work = detailedWork)
+                HeroSection(work = workData)
             }
             
             // AI Insights Button
             item {
                 AIInsightsButton(
-                    onClick = { onChatClick("Tell me more about ${detailedWork.title}") }
+                    onClick = { onChatClick("Tell me more about ${workData.title}") }
                 )
             }
             
             // Key Equation (if exists)
-            if (detailedWork.keyEquation != null) {
+            if (workData.keyEquation != null) {
                 item {
                     KeyEquationCard(
-                        equation = detailedWork.keyEquation!!,
-                        explanation = detailedWork.keyEquationExplanation ?: ""
+                        equation = workData.keyEquation!!,
+                        explanation = workData.keyEquationExplanation ?: ""
                     )
                 }
             }
             
             // Summary
             item {
-                SummaryCard(summary = detailedWork.summary)
+                SummaryCard(summary = workData.summary)
             }
             
             // Sections
-            items(detailedWork.sections) { section ->
+            items(workData.sections ?: emptyList()) { section ->
                 SectionCard(section = section)
             }
             
             // Equations Toggle
-            if (detailedWork.equations.isNotEmpty()) {
+            if (!workData.equations.isNullOrEmpty()) {
                 item {
                     ExpandableSection(
                         title = "Mathematical Equations",
                         icon = "📐",
-                        count = detailedWork.equations.size,
+                        count = workData.equations?.size ?: 0,
                         isExpanded = showEquations,
                         onToggle = { showEquations = !showEquations }
                     )
                 }
                 
                 if (showEquations) {
-                    items(detailedWork.equations) { equation ->
+                    items(workData.equations ?: emptyList()) { equation ->
                         EquationCard(equation = equation)
                     }
                 }
             }
             
             // Fun Facts Toggle
-            if (detailedWork.funFacts.isNotEmpty()) {
+            if (!workData.funFacts.isNullOrEmpty()) {
                 item {
                     ExpandableSection(
                         title = "Fun Facts",
                         icon = "🎯",
-                        count = detailedWork.funFacts.size,
+                        count = workData.funFacts?.size ?: 0,
                         isExpanded = showFunFacts,
                         onToggle = { showFunFacts = !showFunFacts }
                     )
                 }
                 
                 if (showFunFacts) {
-                    items(detailedWork.funFacts) { fact ->
+                    items(workData.funFacts ?: emptyList()) { fact ->
                         FunFactCard(fact = fact)
                     }
                 }
@@ -249,7 +209,7 @@ fun WorkDetailScreen(
 }
 
 @Composable
-private fun HeroSection(work: DetailedWork) {
+private fun HeroSection(work: com.kreggscode.aristotlequotes.data.MajorWork) {
     GlassmorphicCard(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -422,7 +382,7 @@ private fun SummaryCard(summary: String) {
 }
 
 @Composable
-private fun SectionCard(section: WorkSection) {
+private fun SectionCard(section: Section) {
     GlassmorphicCard(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -498,7 +458,7 @@ private fun ExpandableSection(
 }
 
 @Composable
-private fun EquationCard(equation: Equation) {
+private fun EquationCard(equation: EquationDetail) {
     GlassmorphicCard(
         modifier = Modifier.fillMaxWidth()
     ) {

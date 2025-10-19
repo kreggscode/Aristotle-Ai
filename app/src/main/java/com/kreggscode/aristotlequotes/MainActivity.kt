@@ -1,5 +1,6 @@
 package com.kreggscode.aristotlequotes
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -52,6 +54,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         // Enable edge-to-edge display with proper insets handling for Android 15+
+        // This is the recommended approach for backward compatibility
         enableEdgeToEdge(
             statusBarStyle = androidx.activity.SystemBarStyle.dark(
                 android.graphics.Color.TRANSPARENT
@@ -61,13 +64,27 @@ class MainActivity : ComponentActivity() {
             )
         )
         
-        // Configure window for edge-to-edge
+        // Configure window for edge-to-edge - works for all Android versions
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        // Handle display cutout for Android 9+ (replaces deprecated LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode = 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    // Android 11+ (API 30+): Use ALWAYS for full edge-to-edge
+                    android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                } else {
+                    // Android 9-10 (API 28-29): Use SHORT_EDGES (not deprecated on these versions)
+                    android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                }
+        }
         
         // Set status bar and navigation bar icons to WHITE (light icons on dark background)
         WindowCompat.getInsetsController(window, window.decorView)?.apply {
             isAppearanceLightStatusBars = false  // false = white icons
             isAppearanceLightNavigationBars = false  // false = white icons
+            // Ensure system bars behavior is consistent across Android versions
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
         
         // Observe notification settings

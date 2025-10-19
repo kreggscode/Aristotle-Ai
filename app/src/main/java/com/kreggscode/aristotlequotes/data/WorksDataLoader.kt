@@ -81,11 +81,11 @@ data class Paper(
     val keyEquations: List<String>? = null,
     val predictions: List<Prediction>? = null,
     val papers: List<SubPaper>? = null,
-    val works: List<WorkItem>? = null,
+    val works: List<PaperWorkItem>? = null,
     val legacy: String? = null
 )
 
-data class WorkItem(
+data class PaperWorkItem(
     val number: Int,
     val title: String,
     val topic: String,

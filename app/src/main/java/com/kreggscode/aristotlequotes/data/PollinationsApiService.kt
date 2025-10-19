@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit
 import com.kreggscode.aristotlequotes.BuildConfig
 
 // Request/Response models for Pollinations AI
+// Field names MUST match exactly what ProGuard keeps
 data class PollinationsMessage(
     val role: String,
     val content: String
@@ -30,14 +31,21 @@ data class PollinationsChoice(
     val message: PollinationsMessage,
     val index: Int,
     @SerializedName("finish_reason")
-    val finishReason: String?
+    val finishReason: String?,
+    @SerializedName("content_filter_results")
+    val contentFilterResults: Map<String, Any>? = null
 )
 
 data class PollinationsResponse(
     val id: String?,
     val choices: List<PollinationsChoice>,
     val created: Long?,
-    val model: String?
+    val model: String?,
+    @SerializedName("system_fingerprint")
+    val systemFingerprint: String? = null,
+    val usage: Map<String, Any>? = null,
+    @SerializedName("prompt_filter_results")
+    val promptFilterResults: List<Map<String, Any>>? = null
 )
 
 // Retrofit API interface

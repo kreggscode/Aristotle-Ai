@@ -18,6 +18,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,8 +60,25 @@ fun AristotleWorksScreen(
     onChatClick: (String) -> Unit,
     initialCategory: WorkCategory? = null
 ) {
-    // Use rememberSaveable to preserve category selection across navigation
-    var selectedCategory by rememberSaveable { mutableStateOf<WorkCategory?>(initialCategory) }
+    // Use rememberSaveable with custom saver to preserve category selection across navigation
+    // This prevents ClassCastException in release builds with ProGuard
+    var selectedCategory by rememberSaveable(
+        stateSaver = object : Saver<WorkCategory?, String> {
+            override fun restore(value: String): WorkCategory? {
+                return when (value) {
+                    "MAJOR_WORKS" -> WorkCategory.MAJOR_WORKS
+                    "ESSAYS" -> WorkCategory.ESSAYS
+                    "LETTERS" -> WorkCategory.LETTERS
+                    "PAPERS" -> WorkCategory.PAPERS
+                    "null" -> null
+                    else -> null
+                }
+            }
+            override fun SaverScope.save(value: WorkCategory?): String {
+                return value?.name ?: "null"
+            }
+        }
+    ) { mutableStateOf<WorkCategory?>(initialCategory) }
     val context = LocalContext.current
     val dataLoader = remember { WorksDataLoader(context) }
     val coroutineScope = rememberCoroutineScope()
